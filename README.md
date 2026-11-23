@@ -72,3 +72,17 @@ Os ícones OmegaCollection são aplicados após `flutter create` pelo script `sc
 - O nome interno do pacote Flutter continua `omega_collection` por compatibilidade com o projeto.
 
 **Validação pendente:** execute o GitHub Actions e teste a janela, ícone e compilação em cada plataforma.
+
+
+## Novidades v1.2.0 — categorias e campos personalizados
+
+- Menu lateral → **Gerenciar categorias**: criar, renomear, ocultar e excluir categorias.
+- As categorias padrão também podem ser ocultadas ou excluídas e restauradas posteriormente.
+- Cada categoria, padrão ou personalizada, aceita campos adicionais de texto, número, data (texto), seleção ou sim/não.
+- Campos de seleção têm opções configuráveis. Campos personalizados podem ser renomeados e excluídos.
+- A exclusão de categoria com registros apaga os registros associados; exporte um backup antes.
+- O JSON local passa para `version: 2`, mantendo importação automática de backups `version: 1`.
+- A tela inicial continua exibindo somente categorias visíveis com registros; a busca global inclui campos personalizados.
+- Tema vermelho mais forte também nos comandos de importar/exportar e nas superfícies dos diálogos.
+
+**Validação:** esta versão requer execução de `flutter analyze lib` e builds no GitHub Actions. Não foi compilada neste ambiente.
