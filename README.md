@@ -54,3 +54,11 @@ O esquema JSON contém `version: 1` e `items: [...]`; cada item contém `id`, `c
 ## Observações técnicas
 
 Este é um **primeiro código-fonte**, não uma build previamente compilada ou testada no dispositivo. O funcionamento de seleção/exportação de arquivos e do navegador deve ser validado em cada plataforma. O app não solicita internet para a coleção; abrir sites usa o navegador do dispositivo. O símbolo Ω é temporário e pode ser substituído por ícones próprios para Windows, Linux e Android.
+
+## Atualização v1.1 — Categorias e capas
+
+A página inicial agora mostra apenas categorias que possuem registros. Clique na categoria para ver seus itens. Filmes, séries, livros e jogos possuem campo de formato físico/digital (livros: físico/e-book). Cada registro dessas categorias pode receber uma capa PNG/JPEG/WebP de até 3 MB. A imagem é codificada em Base64 no mesmo JSON, preservada na exportação/importação. JSON v1 permanece compatível com os backups anteriores. O tamanho do JSON aumenta conforme as imagens adicionadas.
+
+Os ícones OmegaCollection são aplicados após `flutter create` pelo script `scripts/apply_branding.py`: `.ico` para Windows, ícones launcher Android e PNG para Linux (incluído no pacote Linux). Para usar o PNG como ícone no menu de aplicativos Linux, configure um arquivo `.desktop` no sistema.
+
+**Atenção:** a compilação depende do GitHub Actions; não foram executados builds Flutter locais neste pacote.
