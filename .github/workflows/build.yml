@@ -46,6 +46,9 @@ jobs:
         shell: bash
         run: flutter create --platforms=windows,linux,android --project-name omega_collection .
 
+      - name: Apply OmegaCollection icons
+        run: python scripts/apply_branding.py
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -78,7 +81,9 @@ jobs:
 
       - name: Package Linux
         if: matrix.target == 'linux'
-        run: tar -czf OmegaCollection-Linux.tar.gz -C build/linux/x64/release/bundle .
+        run: |
+          cp assets/branding/omega_icon.png build/linux/x64/release/bundle/OmegaCollection.png
+          tar -czf OmegaCollection-Linux.tar.gz -C build/linux/x64/release/bundle .
 
       - name: Package Android
         if: matrix.target == 'apk'
