@@ -1,60 +1,89 @@
 name: Build OmegaCollection
+
 on:
   push:
     branches: [main]
     tags: ['v*']
   workflow_dispatch:
+
 permissions:
   contents: write
+
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: windows-latest
+          - os: windows-2022
             target: windows
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             target: linux
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             target: apk
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Configure Java 17 for Android
+        if: matrix.target == 'apk'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version: 3.35.7
           cache: true
+
       - name: Install Linux dependencies
         if: matrix.target == 'linux'
         run: sudo apt-get update && sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+
       - name: Generate native platform scaffolding
         shell: bash
         run: flutter create --platforms=windows,linux,android --project-name omega_collection .
+
       - name: Install dependencies
         run: flutter pub get
+
       - name: Analyze
         run: flutter analyze lib
+
       - name: Build Windows
         if: matrix.target == 'windows'
-        run: flutter build windows --release
+        shell: pwsh
+        env:
+          CMAKE_GENERATOR: Visual Studio 17 2022
+        run: |
+          flutter doctor -v
+          flutter build windows --release
+
       - name: Build Linux
         if: matrix.target == 'linux'
         run: flutter build linux --release
+
       - name: Build Android APK
         if: matrix.target == 'apk'
-        run: flutter build apk --release
+        run: |
+          java -version
+          flutter build apk --release --verbose
+
       - name: Package Windows
         if: matrix.target == 'windows'
         shell: pwsh
         run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath OmegaCollection-Windows.zip
+
       - name: Package Linux
         if: matrix.target == 'linux'
         run: tar -czf OmegaCollection-Linux.tar.gz -C build/linux/x64/release/bundle .
+
       - name: Package Android
         if: matrix.target == 'apk'
         run: cp build/app/outputs/flutter-apk/app-release.apk OmegaCollection-Android.apk
+
       - uses: actions/upload-artifact@v4
         with:
           name: OmegaCollection-${{ matrix.target }}
@@ -63,6 +92,7 @@ jobs:
             OmegaCollection-Linux.tar.gz
             OmegaCollection-Android.apk
           if-no-files-found: error
+
       - name: Publish release on tag
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
