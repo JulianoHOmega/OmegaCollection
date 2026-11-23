@@ -62,3 +62,13 @@ A página inicial agora mostra apenas categorias que possuem registros. Clique n
 Os ícones OmegaCollection são aplicados após `flutter create` pelo script `scripts/apply_branding.py`: `.ico` para Windows, ícones launcher Android e PNG para Linux (incluído no pacote Linux). Para usar o PNG como ícone no menu de aplicativos Linux, configure um arquivo `.desktop` no sistema.
 
 **Atenção:** a compilação depende do GitHub Actions; não foram executados builds Flutter locais neste pacote.
+
+## Ajustes v1.1.2
+
+- Botões e destaques em vermelho mais forte (`#C81024`), sem o rosa claro do tema automático.
+- Janela maximizada (não fullscreen) ao abrir no Windows e Linux via `window_manager`.
+- Título da janela Windows alterado para `OmegaCollection`; nome do executável também.
+- Recurso `.ico` aplicado ao EXE Windows durante o build. Se o Explorer mostrar o ícone antigo, teste o novo EXE em outra pasta ou atualize o cache de ícones do Windows.
+- O nome interno do pacote Flutter continua `omega_collection` por compatibilidade com o projeto.
+
+**Validação pendente:** execute o GitHub Actions e teste a janela, ícone e compilação em cada plataforma.

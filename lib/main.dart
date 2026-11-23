@@ -5,10 +5,28 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:window_manager/window_manager.dart';
 
-void main() { WidgetsFlutterBinding.ensureInitialized(); runApp(const OmegaApp()); }
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isWindows || Platform.isLinux) {
+    await windowManager.ensureInitialized();
+    const options = WindowOptions(
+      title: 'OmegaCollection',
+      minimumSize: Size(850, 550),
+      center: true,
+    );
+    await windowManager.waitUntilReadyToShow(options, () async {
+      await windowManager.setTitle('OmegaCollection');
+      await windowManager.maximize();
+      await windowManager.show();
+      await windowManager.focus();
+    });
+  }
+  runApp(const OmegaApp());
+}
 
-const red = Color(0xFFD72632);
+const red = Color(0xFFC81024);
 const silver = Color(0xFFC7CBD2);
 const bg = Color(0xFF111216);
 const categories = ['Filmes', 'Séries', 'Livros', 'Jogos', 'Sites'];
@@ -54,7 +72,17 @@ class OmegaApp extends StatelessWidget {
   @override Widget build(BuildContext context) => MaterialApp(
     title: 'OmegaCollection', debugShowCheckedModeBanner: false,
     theme: ThemeData(useMaterial3: true, brightness: Brightness.dark,
-      scaffoldBackgroundColor: bg, colorScheme: ColorScheme.fromSeed(seedColor: red, brightness: Brightness.dark),
+      scaffoldBackgroundColor: bg, colorScheme: ColorScheme.fromSeed(seedColor: red, brightness: Brightness.dark).copyWith(
+        primary: red, onPrimary: Colors.white,
+        primaryContainer: const Color(0xFF710B19), onPrimaryContainer: Colors.white,
+        secondary: silver, onSecondary: bg,
+        surface: bg, onSurface: silver,
+      ),
+      filledButtonTheme: FilledButtonThemeData(style: FilledButton.styleFrom(
+        backgroundColor: red, foregroundColor: Colors.white,
+        disabledBackgroundColor: const Color(0xFF55202A),
+        disabledForegroundColor: const Color(0xFFBBA9AC),
+      )),
       appBarTheme: const AppBarTheme(backgroundColor: bg, foregroundColor: silver),
       cardTheme: CardThemeData(color: const Color(0xFF22252D)),
       inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder())),
@@ -144,9 +172,9 @@ class _HomeState extends State<Home> {
           const SizedBox(height: 12),
         ],
         TextField(key: ValueKey(selectedCategory), onChanged: (v) => setState(() => search = v.toLowerCase()),
-          decoration: InputDecoration(prefixIcon: const Icon(Icons.search), hintText: selectedCategory == null ? 'Pesquisar categorias...' : 'Pesquisar registros...')),
+          decoration: InputDecoration(prefixIcon: const Icon(Icons.search), hintText: selectedCategory == null ? 'Pesquisar em todos os registros...' : 'Pesquisar registros...')),
         const SizedBox(height: 18),
-        if (selectedCategory == null) ...[
+        if (selectedCategory == null && search.trim().isEmpty) ...[
           if (visibleCategories.isEmpty) const Padding(padding: EdgeInsets.symmetric(vertical: 64), child: Center(child: Text('Sua coleção está vazia.\nToque em Novo registro para começar.', textAlign: TextAlign.center))),
           LayoutBuilder(
             builder: (context, constraints) => GridView.count(
@@ -157,7 +185,7 @@ class _HomeState extends State<Home> {
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
               children: [
-                for (final category in visibleCategories.where((c) => c.toLowerCase().contains(search)))
+                for (final category in visibleCategories)
                   Card(
                     clipBehavior: Clip.antiAlias,
                     child: InkWell(
@@ -186,6 +214,45 @@ class _HomeState extends State<Home> {
               ],
             ),
           ),
+        ] else if (selectedCategory == null) ...[
+          // Pesquisa global: procura registros em todas as categorias.
+          // Evita pesquisar a capa em base64, que não é texto do registro.
+          for (final item in items.where((e) => e.entries.any((entry) =>
+              entry.key != 'capaBase64' &&
+              entry.value.toString().toLowerCase().contains(search.trim()))))
+            Card(child: ListTile(
+              leading: CoverImage(base64Value: '${item['capaBase64'] ?? ''}', size: 54),
+              title: Text(_title(item)),
+              subtitle: Text('${item['categoria']} · ${_subtitle(item)}', maxLines: 2, overflow: TextOverflow.ellipsis),
+              onTap: () {
+                final category = '${item['categoria']}';
+                if (category == 'Sites' && '${item['site'] ?? ''}'.trim().isNotEmpty) {
+                  _openSite('${item['site']}');
+                } else {
+                  _edit(category, item);
+                }
+              },
+              trailing: PopupMenuButton<String>(
+                onSelected: (choice) {
+                  if (choice == 'edit') _edit('${item['categoria']}', item);
+                  if (choice == 'delete') _delete(item);
+                  if (choice == 'open') _openSite('${item['site'] ?? ''}');
+                },
+                itemBuilder: (_) => [
+                  const PopupMenuItem(value: 'edit', child: Text('Editar')),
+                  if (item['categoria'] == 'Sites' && '${item['site'] ?? ''}'.trim().isNotEmpty)
+                    const PopupMenuItem(value: 'open', child: Text('Abrir no navegador')),
+                  const PopupMenuItem(value: 'delete', child: Text('Excluir')),
+                ],
+              ),
+            )),
+          if (!items.any((e) => e.entries.any((entry) =>
+              entry.key != 'capaBase64' &&
+              entry.value.toString().toLowerCase().contains(search.trim()))))
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 48),
+              child: Center(child: Text('Nenhum registro encontrado.')),
+            ),
         ] else ...[
           for (final item in items.where((e) => e['categoria'] == selectedCategory && e.values.toString().toLowerCase().contains(search)))
             Card(child: ListTile(
