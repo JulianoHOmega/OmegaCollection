@@ -148,17 +148,44 @@ class _HomeState extends State<Home> {
         const SizedBox(height: 18),
         if (selectedCategory == null) ...[
           if (visibleCategories.isEmpty) const Padding(padding: EdgeInsets.symmetric(vertical: 64), child: Center(child: Text('Sua coleção está vazia.\nToque em Novo registro para começar.', textAlign: TextAlign.center))),
-          LayoutBuilder(builder: (context, constraints) => GridView.count(shrinkWrap: true, physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: constraints.maxWidth >= 850 ? 4 : constraints.maxWidth >= 480 ? 3 : 2,
-            childAspectRatio: 1.45, mainAxisSpacing: 12, crossAxisSpacing: 12,
-            children: [for (final category in visibleCategories.where((c) => c.toLowerCase().contains(search)))
-              Card(clipBehavior: Clip.antiAlias, child: InkWell(onTap: () => setState(() {selectedCategory = category; search = '';}),
-                child: Padding(padding: const EdgeInsets.all(12), child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Icon(icons[categories.indexOf(category)], color: red, size: 34), const SizedBox(height: 8),
-                  Text(category, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
-                  const SizedBox(height: 5),
-                  Text(() {final n = items.where((e) => e['categoria'] == category).length; return '$n ${n == 1 ? 'registro' : 'registros'}';}(), style: const TextStyle(color: silver))
-                ]))))]))),
+          LayoutBuilder(
+            builder: (context, constraints) => GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: constraints.maxWidth >= 850 ? 4 : constraints.maxWidth >= 480 ? 3 : 2,
+              childAspectRatio: 1.45,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              children: [
+                for (final category in visibleCategories.where((c) => c.toLowerCase().contains(search)))
+                  Card(
+                    clipBehavior: Clip.antiAlias,
+                    child: InkWell(
+                      onTap: () => setState(() { selectedCategory = category; search = ''; }),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(icons[categories.indexOf(category)], color: red, size: 34),
+                            const SizedBox(height: 8),
+                            Text(category, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                            const SizedBox(height: 5),
+                            Text(
+                              () {
+                                final n = items.where((e) => e['categoria'] == category).length;
+                                return '$n ${n == 1 ? 'registro' : 'registros'}';
+                              }(),
+                              style: const TextStyle(color: silver),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ] else ...[
           for (final item in items.where((e) => e['categoria'] == selectedCategory && e.values.toString().toLowerCase().contains(search)))
             Card(child: ListTile(
