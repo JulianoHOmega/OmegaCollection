@@ -590,7 +590,7 @@ class _CategoryManagerState extends State<CategoryManager> {
           ]),
           for (final f in (category['campos'] as List)) ListTile(
             title: Text((f as Map)['nome'].toString()), subtitle: Text(f['tipo'].toString()),
-            trailing: Wrap(mainAxisSize: MainAxisSize.min, children: [
+            trailing: Row(mainAxisSize: MainAxisSize.min, children: [
               IconButton(tooltip: 'Editar campo', icon: const Icon(Icons.edit_outlined), onPressed: () => editField(category, f as Map<String, dynamic>)),
               IconButton(tooltip: 'Excluir campo', icon: const Icon(Icons.delete_outline), onPressed: () => deleteField(category, f as Map<String, dynamic>)),
             ]),
