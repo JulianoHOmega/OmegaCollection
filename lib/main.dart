@@ -9,8 +9,8 @@ import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final isDesktop = Platform.isWindows || Platform.isLinux;
-  if (isDesktop) {
+  final useWindowManager = Platform.isLinux;
+  if (useWindowManager) {
     await windowManager.ensureInitialized();
     const options = WindowOptions(
       title: 'OmegaCollection',
@@ -28,7 +28,7 @@ Future<void> main() async {
 
   runApp(const OmegaApp());
 
-  if (isDesktop) {
+  if (useWindowManager) {
     // Reveal only after Flutter has produced its first frame. This avoids
     // showing the empty native surface during engine initialization.
     WidgetsBinding.instance.addPostFrameCallback((_) async {
