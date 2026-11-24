@@ -18,8 +18,8 @@ Future<void> main() async {
     );
     await windowManager.waitUntilReadyToShow(options, () async {
       await windowManager.setTitle('OmegaCollection');
-      await windowManager.maximize();
       await windowManager.show();
+      await windowManager.maximize();
       await windowManager.focus();
     });
   }
@@ -97,6 +97,7 @@ class OmegaApp extends StatelessWidget {
       appBarTheme: const AppBarTheme(backgroundColor: bg, foregroundColor: silver),
       bottomSheetTheme: const BottomSheetThemeData(backgroundColor: Color(0xFF1C1D22), modalBackgroundColor: Color(0xFF1C1D22)),
       dialogTheme: const DialogThemeData(backgroundColor: Color(0xFF1C1D22)),
+      drawerTheme: const DrawerThemeData(backgroundColor: Color(0xFF17181D), surfaceTintColor: Colors.transparent),
       textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: red)),
       outlinedButtonTheme: OutlinedButtonThemeData(style: OutlinedButton.styleFrom(foregroundColor: red, side: const BorderSide(color: red))),
       cardTheme: CardThemeData(color: const Color(0xFF22252D)),
@@ -184,12 +185,21 @@ class _HomeState extends State<Home> {
       drawer: Drawer(child: SafeArea(child: ListView(children: [const ListTile(title: Text('OmegaCollection'), subtitle: Text('Sua coleção. Seu universo.')),
         ListTile(leading: const Icon(Icons.file_upload_outlined, color: red), title: const Text('Exportar JSON', style: TextStyle(color: red)), onTap: () {Navigator.pop(context); _export();}),
         ListTile(leading: const Icon(Icons.file_download_outlined, color: red), title: const Text('Importar JSON', style: TextStyle(color: red)), onTap: () {Navigator.pop(context); _import();}),
-        ListTile(leading: const Icon(Icons.tune, color: red), title: const Text('Gerenciar categorias'), onTap: () {Navigator.pop(context); _manageCategories();})]))),
-      floatingActionButton: FloatingActionButton.extended(backgroundColor: red, foregroundColor: Colors.white, icon: const Icon(Icons.add), label: const Text('Novo registro'), onPressed: () async {
+        ]))),
+      floatingActionButton: Row(mainAxisSize: MainAxisSize.min, children: [
+        FloatingActionButton.extended(
+          heroTag: 'manage_categories',
+          backgroundColor: const Color(0xFF25262B), foregroundColor: Colors.white,
+          icon: const Icon(Icons.tune), label: const Text('Gerenciar categorias'),
+          onPressed: _manageCategories,
+        ),
+        const SizedBox(width: 12),
+        FloatingActionButton.extended(heroTag: 'new_record', backgroundColor: red, foregroundColor: Colors.white, icon: const Icon(Icons.add), label: const Text('Novo registro'), onPressed: () async {
         final category = await showModalBottomSheet<String>(context: context, builder: (ctx) => SafeArea(child: ListView(shrinkWrap: true, children: [const ListTile(title: Text('Escolha a categoria')),
           for (final c in categoryDefs.where((e) => e['oculta'] != true)) ListTile(leading: Icon(categoryIcon(c['id'].toString())), title: Text(c['nome'].toString()), onTap: () => Navigator.pop(ctx, c['id']))])));
         if (category != null) _edit(category);
       }),
+      ]),
       body: loading ? const Center(child: CircularProgressIndicator()) : ListView(padding: const EdgeInsets.fromLTRB(16, 12, 16, 96), children: [
         if (selectedCategory != null) ...[
           Row(children: [IconButton(onPressed: () => setState(() {selectedCategory = null; search = '';}), icon: const Icon(Icons.arrow_back)),
