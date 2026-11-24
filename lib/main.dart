@@ -12,11 +12,6 @@ Future<void> main() async {
   final isDesktop = Platform.isWindows || Platform.isLinux;
   if (isDesktop) {
     await windowManager.ensureInitialized();
-  }
-
-  runApp(const OmegaApp());
-
-  if (isDesktop) {
     const options = WindowOptions(
       title: 'OmegaCollection',
       minimumSize: Size(850, 550),
@@ -24,11 +19,19 @@ Future<void> main() async {
       backgroundColor: bg,
       skipTaskbar: false,
     );
+    // Prepare the native window before constructing Flutter's widget tree.
     await windowManager.waitUntilReadyToShow(options, () async {
-      // Maximize before making the window visible to avoid the
-      // first-frame resize/painting artifacts on Windows.
       await windowManager.setTitle('OmegaCollection');
       await windowManager.maximize();
+    });
+  }
+
+  runApp(const OmegaApp());
+
+  if (isDesktop) {
+    // Reveal only after Flutter has produced its first frame. This avoids
+    // showing the empty native surface during engine initialization.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       await windowManager.show();
       await windowManager.focus();
     });
