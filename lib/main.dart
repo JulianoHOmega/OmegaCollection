@@ -9,33 +9,22 @@ import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final useWindowManager = Platform.isLinux;
-  if (useWindowManager) {
+  if (Platform.isWindows || Platform.isLinux) {
     await windowManager.ensureInitialized();
     const options = WindowOptions(
       title: 'OmegaCollection',
       minimumSize: Size(850, 550),
       center: true,
-      backgroundColor: bg,
-      skipTaskbar: false,
     );
-    // Prepare the native window before constructing Flutter's widget tree.
     await windowManager.waitUntilReadyToShow(options, () async {
       await windowManager.setTitle('OmegaCollection');
-      await windowManager.maximize();
-    });
-  }
-
-  runApp(const OmegaApp());
-
-  if (useWindowManager) {
-    // Reveal only after Flutter has produced its first frame. This avoids
-    // showing the empty native surface during engine initialization.
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // Inicia em janela normal para evitar artefatos na primeira renderização.
+      // O usuário ainda pode maximizar manualmente pelo botão do Windows.
       await windowManager.show();
       await windowManager.focus();
     });
   }
+  runApp(const OmegaApp());
 }
 
 const red = Color(0xFFC81024);
