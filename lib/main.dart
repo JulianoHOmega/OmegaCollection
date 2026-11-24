@@ -9,21 +9,30 @@ import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isWindows || Platform.isLinux) {
+  final isDesktop = Platform.isWindows || Platform.isLinux;
+  if (isDesktop) {
     await windowManager.ensureInitialized();
+  }
+
+  runApp(const OmegaApp());
+
+  if (isDesktop) {
     const options = WindowOptions(
       title: 'OmegaCollection',
       minimumSize: Size(850, 550),
       center: true,
+      backgroundColor: bg,
+      skipTaskbar: false,
     );
     await windowManager.waitUntilReadyToShow(options, () async {
+      // Maximize before making the window visible to avoid the
+      // first-frame resize/painting artifacts on Windows.
       await windowManager.setTitle('OmegaCollection');
-      await windowManager.show();
       await windowManager.maximize();
+      await windowManager.show();
       await windowManager.focus();
     });
   }
-  runApp(const OmegaApp());
 }
 
 const red = Color(0xFFC81024);
