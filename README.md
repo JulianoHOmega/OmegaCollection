@@ -1,88 +1,89 @@
+<div align="center">
+
 # Ω OmegaCollection
 
-Catálogo pessoal **offline** de filmes, séries, livros, jogos e sites. Tema preto, vermelho e prata.
+### Sua coleção. Seu universo.
 
-## Funcionalidades v1.0 (código inicial)
+**Organize filmes, séries, livros, jogos, sites e tudo o que você quiser — em um só lugar, mesmo offline.**
 
-- Filmes: nome e ano.
-- Séries: cadastro único com lista editável de temporadas (número, nome e ano).
-- Livros: nome, autor, ano e formato físico/e-book.
-- Jogos: nome, preço pago, avaliação (bom/ruim) e situação (baixar/não baixar/terminei/abandonei).
-- Sites: endereço, descrição e abertura no navegador padrão pelo menu do registro.
-- Todas as categorias: coleção e observações; campos opcionais, exigindo pelo menos um dado.
-- Início mostra somente categorias com registros; busca, edição e exclusão.
-- Dados locais em JSON versionado, com exportação e importação de backup.
+![Flutter](https://img.shields.io/badge/Flutter-Dart-02569B?logo=flutter&logoColor=white)
+![Windows](https://img.shields.io/badge/Windows-Dispon%C3%ADvel-20232A?logo=windows&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-Dispon%C3%ADvel-20232A?logo=linux&logoColor=white)
+![Android](https://img.shields.io/badge/Android-Dispon%C3%ADvel-20232A?logo=android&logoColor=white)
+![MIT](https://img.shields.io/badge/Licen%C3%A7a-MIT-C81024)
 
-## Como preparar e executar
+**[⬇️ Windows](https://github.com/JulianoHOmega/OmegaCollection/releases/download/v2.0/OmegaCollection-windows.zip)** · **[⬇️ Linux](https://github.com/JulianoHOmega/OmegaCollection/releases/download/v2.0/OmegaCollection-linux.zip)** · **[⬇️ Android](https://github.com/JulianoHOmega/OmegaCollection/releases/download/v2.0/OmegaCollection-apk.zip)**
 
-Instale o [Flutter SDK](https://docs.flutter.dev/get-started/install) e as dependências de compilação da plataforma. Na pasta do projeto:
+[Ver a Release v2.0](https://github.com/JulianoHOmega/OmegaCollection/releases/tag/v2.0) · [Reportar problema](https://github.com/JulianoHOmega/OmegaCollection/issues)
+
+</div>
+
+---
+
+## ✨ O que é o OmegaCollection?
+
+O **OmegaCollection** é um gerenciador pessoal de coleções, gratuito e de código aberto, desenvolvido em **Flutter** para **Windows, Linux e Android**. Organize seus registros sem precisar de conta ou conexão com a internet. O visual segue a identidade Ω em **preto, vermelho e prata**.
+
+## 🗂️ Recursos
+
+- **Filmes:** nome, ano, formato físico/digital, capa, coleção e observações.
+- **Séries:** uma série com várias temporadas agrupadas, cada uma com número, nome opcional e ano; formato, capa e observações.
+- **Livros:** nome, autor, ano, formato físico/e-book, capa, coleção e observações.
+- **Jogos:** nome, preço pago, avaliação, situação, formato físico/digital, capa, coleção e observações.
+- **Sites:** endereço e descrição, com opção de abrir o link no navegador.
+- **Categorias personalizadas:** crie, renomeie, oculte, exclua e restaure categorias padrão.
+- **Campos personalizados:** adicione campos às categorias originais ou criadas por você; tipos texto, número, data (entrada textual), seleção configurável e sim/não.
+- **Busca global:** encontre registros de diferentes categorias na mesma pesquisa.
+- **Capas:** imagens PNG, JPG ou WebP de até 3 MB, armazenadas no backup JSON.
+- **Backup e restauração:** exporte e importe seus dados em JSON, inclusive categorias e campos personalizados.
+
+A página inicial mostra apenas categorias visíveis com registros. Os campos são opcionais, mas cada registro precisa conter pelo menos uma informação.
+
+## 📥 Downloads
+
+| Plataforma | Download | Como usar |
+| --- | --- | --- |
+| 🪟 Windows | [OmegaCollection-windows.zip](https://github.com/JulianoHOmega/OmegaCollection/releases/download/v2.0/OmegaCollection-windows.zip) | Extraia o ZIP e execute o `.exe` na pasta extraída, mantendo os arquivos ao lado dele. |
+| 🐧 Linux | [OmegaCollection-linux.zip](https://github.com/JulianoHOmega/OmegaCollection/releases/download/v2.0/OmegaCollection-linux.zip) | Extraia o ZIP, localize o executável e conceda permissão de execução se necessário. |
+| 🤖 Android | [OmegaCollection-apk.zip](https://github.com/JulianoHOmega/OmegaCollection/releases/download/v2.0/OmegaCollection-apk.zip) | Extraia o ZIP, abra o `.apk` no Android e autorize a instalação quando solicitado. |
+
+> **Atenção:** os arquivos acima são links fornecidos para a Release `v2.0`. A numeração da Release é independente da versão interna que pode aparecer no `pubspec.yaml`.
+
+## 💾 Onde ficam os dados?
+
+Os registros são armazenados localmente em `omega_collection.json`, no diretório de suporte do aplicativo, determinado pelo sistema operacional. O arquivo JSON usa o esquema **versão 2**, com suporte à importação de backups antigos da versão 1.
+
+**Exporte um backup regularmente.** Desinstalar o aplicativo, especialmente no Android, pode apagar os dados locais. Importar um backup substitui os dados atuais após confirmação. O OmegaCollection **não sincroniza automaticamente** os dados entre dispositivos.
+
+## 🛠️ Executar a partir do código-fonte
+
+Instale o [Flutter SDK](https://docs.flutter.dev/get-started/install) e as ferramentas necessárias à plataforma. Na raiz do projeto:
 
 ```bash
+flutter doctor
 flutter create --platforms=windows,linux,android --project-name omega_collection .
 flutter pub get
-flutter run -d windows  # no Windows
-# flutter run -d linux   # no Linux
-# flutter run -d <android-device-id>  # com dispositivo Android configurado
+flutter run -d windows
 ```
 
-O `flutter create` gera os diretórios nativos, que não estão incluídos neste pacote inicial. Para conferir o ambiente, use `flutter doctor`.
+Para Linux, use `flutter run -d linux`; para Android, selecione um dispositivo com `flutter devices` e use `flutter run -d <id-do-dispositivo>`.
 
-## GitHub Actions
+Os diretórios nativos são gerados pelo `flutter create`. O script `scripts/apply_branding.py` aplica os ícones de marca durante o GitHub Actions. As compilações automatizadas ficam em [Actions](https://github.com/JulianoHOmega/OmegaCollection/actions).
 
-Envie os arquivos para um repositório novo no GitHub, preferencialmente `OmegaCollection`, com branch principal `main`. O workflow `.github/workflows/build.yml` compila em Windows, Linux e Android em runners separados, disponibilizando os resultados na aba **Actions**. Ao enviar uma tag `v1.0.0`, tenta publicar automaticamente os arquivos em **Releases**.
+## 🤝 Contribuições
 
-```bash
-git init
-git add .
-git commit -m "Initial OmegaCollection Flutter app"
-git branch -M main
-git remote add origin https://github.com/SEU_USUARIO/OmegaCollection.git
-git push -u origin main
-# após validar as builds:
-git tag v1.0.0
-git push origin v1.0.0
-```
+Ideias, correções, documentação e melhorias são bem-vindas. Consulte o [CONTRIBUTING.md](CONTRIBUTING.md) antes de abrir um Pull Request. Você também pode registrar sugestões ou problemas em [Issues](https://github.com/JulianoHOmega/OmegaCollection/issues).
 
-**Android:** o APK inicial de release é assinado com a chave de desenvolvimento padrão do Flutter, quando disponível no runner. Antes de distribuir amplamente, configure uma chave de assinatura de produção persistente para futuras atualizações.
+## 📜 Licença
 
-## Dados e backup
+Distribuído sob a **Licença MIT**. Consulte [LICENSE](LICENSE).
 
-Os dados são gravados automaticamente em `omega_collection.json` dentro da pasta de suporte da aplicação, definida pelo sistema operacional via `path_provider`. No Android, desinstalar o app pode apagar esse arquivo. Use **Menu → Exportar JSON** para manter uma cópia externa; **Importar JSON** substitui os registros atuais após confirmação. Não é sincronização automática entre dispositivos.
+---
 
-O esquema JSON contém `version: 1` e `items: [...]`; cada item contém `id`, `categoria` e os campos específicos. As temporadas ficam dentro do mesmo item de série.
+<div align="center">
 
-## Observações técnicas
+**Ω OmegaCollection — Sua coleção. Seu universo.**
 
-Este é um **primeiro código-fonte**, não uma build previamente compilada ou testada no dispositivo. O funcionamento de seleção/exportação de arquivos e do navegador deve ser validado em cada plataforma. O app não solicita internet para a coleção; abrir sites usa o navegador do dispositivo. O símbolo Ω é temporário e pode ser substituído por ícones próprios para Windows, Linux e Android.
+Desenvolvido por [JulianoHOmega](https://github.com/JulianoHOmega).
 
-## Atualização v1.1 — Categorias e capas
-
-A página inicial agora mostra apenas categorias que possuem registros. Clique na categoria para ver seus itens. Filmes, séries, livros e jogos possuem campo de formato físico/digital (livros: físico/e-book). Cada registro dessas categorias pode receber uma capa PNG/JPEG/WebP de até 3 MB. A imagem é codificada em Base64 no mesmo JSON, preservada na exportação/importação. JSON v1 permanece compatível com os backups anteriores. O tamanho do JSON aumenta conforme as imagens adicionadas.
-
-Os ícones OmegaCollection são aplicados após `flutter create` pelo script `scripts/apply_branding.py`: `.ico` para Windows, ícones launcher Android e PNG para Linux (incluído no pacote Linux). Para usar o PNG como ícone no menu de aplicativos Linux, configure um arquivo `.desktop` no sistema.
-
-**Atenção:** a compilação depende do GitHub Actions; não foram executados builds Flutter locais neste pacote.
-
-## Ajustes v1.1.2
-
-- Botões e destaques em vermelho mais forte (`#C81024`), sem o rosa claro do tema automático.
-- Janela maximizada (não fullscreen) ao abrir no Windows e Linux via `window_manager`.
-- Título da janela Windows alterado para `OmegaCollection`; nome do executável também.
-- Recurso `.ico` aplicado ao EXE Windows durante o build. Se o Explorer mostrar o ícone antigo, teste o novo EXE em outra pasta ou atualize o cache de ícones do Windows.
-- O nome interno do pacote Flutter continua `omega_collection` por compatibilidade com o projeto.
-
-**Validação pendente:** execute o GitHub Actions e teste a janela, ícone e compilação em cada plataforma.
-
-
-## Novidades v1.2.0 — categorias e campos personalizados
-
-- Menu lateral → **Gerenciar categorias**: criar, renomear, ocultar e excluir categorias.
-- As categorias padrão também podem ser ocultadas ou excluídas e restauradas posteriormente.
-- Cada categoria, padrão ou personalizada, aceita campos adicionais de texto, número, data (texto), seleção ou sim/não.
-- Campos de seleção têm opções configuráveis. Campos personalizados podem ser renomeados e excluídos.
-- A exclusão de categoria com registros apaga os registros associados; exporte um backup antes.
-- O JSON local passa para `version: 2`, mantendo importação automática de backups `version: 1`.
-- A tela inicial continua exibindo somente categorias visíveis com registros; a busca global inclui campos personalizados.
-- Tema vermelho mais forte também nos comandos de importar/exportar e nas superfícies dos diálogos.
-
-**Validação:** esta versão requer execução de `flutter analyze lib` e builds no GitHub Actions. Não foi compilada neste ambiente.
+</div>
