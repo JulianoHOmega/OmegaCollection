@@ -49,10 +49,6 @@ jobs:
       - name: Apply OmegaCollection icons
         run: python scripts/apply_branding.py
 
-      - name: Maximize Windows window natively at startup
-        if: matrix.target == 'windows'
-        run: python scripts/apply_windows_maximized.py
-
       - name: Verify Windows EXE icon
         if: matrix.target == 'windows'
         shell: pwsh
